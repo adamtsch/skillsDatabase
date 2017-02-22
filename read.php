@@ -1,4 +1,4 @@
-<? require_once("config/fileConstants.php") ?>
+<?php require_once("config/fileConstants.php") ?>
 
 <!DOCTYPE HTML>
 <html>
