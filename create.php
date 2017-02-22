@@ -26,7 +26,6 @@
 
         <?php
           if($_POST){
-
               // include database connection
               include 'config/database.php';
 
@@ -44,46 +43,45 @@
                   $title = $_POST['title'];
 
 
-        				  // gather fields and validate
-        				  $fields = array($fName, $lName);
-        				  $valError = false; //No errors yet
-        				  foreach($fields AS $field) { //Loop trough each field
-        				  if( empty($field) ) {
-          					$valError = true; //Yup there are errors
-      				    }
-        				  }
+				// Validate Input
+				$valid = true;
+				if(empty($fName)) {
+				  echo "<div class='alert alert-danger'>Provide Employee First Name</div>";
+				  $valid = false;
+				}
 
-                  // bind the parameters
-                  $stmt->bindParam(':fName', $fName);
-                  $stmt->bindParam(':lName', $lName);
-                  $stmt->bindParam(':title', $title);
+				if (empty($lName)) {
+				  echo "<div class='alert alert-danger'>Provide Employee Last Name</div>";
+				  $valid = false;
+				}
 
 
-                  // specify when this record was inserted to the database
-                  $created=date('Y-m-d H:i:s');
-                  $stmt->bindParam(':created', $created);
+				// bind the parameters
+				$stmt->bindParam(':fName', $fName);
+				$stmt->bindParam(':lName', $lName);
+				$stmt->bindParam(':title', $title);
+
+
+				// specify when this record was inserted to the database
+				$created=date('Y-m-d H:i:s');
+				$stmt->bindParam(':created', $created);
 
 
 
-                  // Execute the query if valid
-				  if ( !$valError ){
-					  if($stmt->execute()){
-						  echo "<div class='alert alert-success'>Record was saved.</div>";
-					  }else{
-						  echo "<div class='alert alert-danger'>Unable to save record.</div>";
-					  }
+				// Execute the query if valid
+				if ( $valid ){
+				  if($stmt->execute()){
+					  echo "<div class='alert alert-success'>Record was saved.</div>";
 				  }else{
-					  echo "<div class='alert alert-danger'>Please fill in all fields</div>";
+					  echo "<div class='alert alert-danger'>Unable to save record.</div>";
 				  }
-
-              }
-
-              // show error
-              catch(PDOException $exception){
-                  die('ERROR: ' . $exception->getMessage());
-              }
-          }
-          ?>
+				}
+			//Show errors
+			}catch(PDOException $exception){
+				die('ERROR: ' . $exception->getMessage());
+				}
+			}
+		?>
 
 
         <!-- html form here where the product information will be entered -->
