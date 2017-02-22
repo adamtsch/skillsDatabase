@@ -1,21 +1,15 @@
 <?php
 
+
+
 // Database parameters
 $host = "localhost";
 $db_name = "skillsdatabase";
 $username = "root";
 $password = "";
 
-try {
-  $con = new PDO("mysql:host={$host};dbname={$db_name}", $username, $password);
+require_once("pdoUtilities.php");
 
-}
-
-// Errors?
-catch(PDOException $exception){
-  echo "Connection error: " . $exception->getMessage();
-}
-
-
+$con = new DatabaseUtils($db_name, $host, $username, $password);
 
  ?>

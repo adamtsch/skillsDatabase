@@ -7,7 +7,7 @@
 
     <!-- Bootstrap -->
     <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="libs/bootstrap-3.3.7/css/bootstrap.min.css" />
+    <link rel="stylesheet" href=<?php echo CSS_BOOTSTRAP_BILL_TURNER ?> />
 
     <!-- HTML5 Shiv and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -35,15 +35,11 @@
 
         <?php
         // include database connection
-        include 'config/database.php';
+        include DATABASE_CONFIG;
 
         // select all data
         $query = "SELECT e.employeeId, e.firstName, e.lastName, t.title, e.lastUpdate, e.dateCreated FROM employees e, titles t WHERE e.employeeTitle=t.titleId ORDER BY e.employeeId ASC";
-        $stmt = $con->prepare($query);
-        $stmt->execute();
-
-        // this is how to get number of rows returned
-        $num = $stmt->rowCount();
+        $result = $con->select($query);
 
         // link to create record form
         echo "<a href='create.php' class='btn btn-primary m-b-1em m-r-1em'>Create New Employee</a>";
@@ -52,7 +48,7 @@
         // echo "<a href='readTitle.php' class='btn btn-primary m-b-1em'>Show Employee Titles</a>";
 
         //check if more than 0 record found
-        if($num>0){
+        if(count($result)>0){
             echo "<table class='table table-hover table-responsive table-bordered'>";//start table
 
                 //creating our table heading
@@ -66,15 +62,15 @@
                     echo "<th>Action</th>";
                 echo "</tr>";
 
-                // retrieve our table contents
-                // fetch() is faster than fetchAll()
-                // http://stackoverflow.com/questions/2770630/pdofetchall-vs-pdofetch-in-a-loop
-                while ($row = $stmt->fetch(PDO::FETCH_ASSOC)){
+                foreach($result as $row) {
 
-                    // extract row
-                    // this will make $row['firstname'] to
-                    // just $firstname only
-                    extract($row);
+                    // Get data from array
+                    $employeeId = $row['employeeId'];
+                    $firstName = $row['firstName'];
+                    $lastName = $row['lastName'];
+                    $title = $row['title'];
+                    $lastUpdate = $row['lastUpdate'];
+                    $dateCreated = $row['dateCreated'];
 
                     // creating new table row per record
                     echo "<tr>";
@@ -91,11 +87,11 @@
                         echo "<td>{$dateCreated}</td>";
                         echo "<td>";
                             // read one record
-                            echo "<a href=" . READ_ONE_EMPLOYEE . ".?id={$employeeId}' class='btn btn-info m-r-1em'>Read</a>";
+                            echo "<a href=" . READ_ONE_EMPLOYEE . ".?id={$employeeId} class='btn btn-info m-r-1em'>Read</a>";
                             // Update employee record
-                            echo "<a href=". UPDATE_EMPLOYEE . "?id={$employeeId}' class='btn btn-primary m-r-1em'>Edit</a>";
+                            echo "<a href=". UPDATE_EMPLOYEE . "?id={$employeeId} class='btn btn-primary m-r-1em'>Edit</a>";
                             // Delete employee
-                            echo "<a href='#' onclick='delete_user({$employeeId});'  class='btn btn-danger'>Delete</a>";
+                            echo "<a href='#' onclick='delete_user({$employeeId})'  class='btn btn-danger'>Delete</a>";
                         echo "</td>";
                     echo "</tr>";
                 }
@@ -116,10 +112,10 @@
     </div> <!-- end .container -->
 
 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-<script src="libs/jquery-3.1.1.min.js"></script>
+<script src=<?php echo JQUERY_LIB ?>></script>
 
 <!-- Include all compiled plugins (below), or include individual files as needed -->
-<script src="libs/bootstrap-3.3.7/js/bootstrap.min.js"></script>
+<script src=<?php echo JS_BOOTSTRAP_BILL_TURNER ?>></script>
 
 </body>
 </html>

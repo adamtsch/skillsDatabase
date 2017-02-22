@@ -1,11 +1,13 @@
+<?php require_once("config/fileConstants.php") ?>
+
 <!DOCTYPE HTML>
 <html>
 <head>
-    <title>Employee</title>
+    <title>Skills Database - Employees</title>
 
     <!-- Bootstrap -->
     <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="libs/bootstrap-3.3.7/css/bootstrap.min.css" />
+    <link rel="stylesheet" href=<?php echo CSS_BOOTSTRAP_BILL_TURNER ?> />
 
     <!-- HTML5 Shiv and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -27,58 +29,39 @@
         <?php
           if($_POST){
               // include database connection
-              include 'config/database.php';
+              require_once(DATABASE_CONFIG);
 
-              try{
+              // insert query
+              $query = "INSERT INTO employees SET firstName=:fName, lastName=:lName, employeeTitle=:title, dateCreated=:created";
 
-                  // insert query
-                  $query = "INSERT INTO employees SET firstName=:fName, lastName=:lName, employeeTitle=:title, dateCreated=:created";
-
-                  // prepare query for execution
-                  $stmt = $con->prepare($query);
-
-                  // posted values
-                  $fName=htmlspecialchars(strip_tags($_POST['fName']));
-                  $lName=htmlspecialchars(strip_tags($_POST['lName']));
-                  $title = $_POST['title'];
+              // posted values
+              $fName=htmlspecialchars(strip_tags($_POST['fName']));
+              $lName=htmlspecialchars(strip_tags($_POST['lName']));
+              $title = $_POST['title'];
 
 
-				// Validate Input
-				$valid = true;
-				if(empty($fName)) {
-				  echo "<div class='alert alert-danger'>Provide Employee First Name</div>";
-				  $valid = false;
-				}
+      				// Validate Input
+      				$valid = true;
+      				if(empty($fName)) {
+      				  echo "<div class='alert alert-danger'>Provide Employee First Name</div>";
+      				  $valid = false;
+      				}
 
-				if (empty($lName)) {
-				  echo "<div class='alert alert-danger'>Provide Employee Last Name</div>";
-				  $valid = false;
-				}
+      				if (empty($lName)) {
+      				  echo "<div class='alert alert-danger'>Provide Employee Last Name</div>";
+      				  $valid = false;
+      				}
 
-
-				// bind the parameters
-				$stmt->bindParam(':fName', $fName);
-				$stmt->bindParam(':lName', $lName);
-				$stmt->bindParam(':title', $title);
-
-
-				// specify when this record was inserted to the database
-				$created=date('Y-m-d H:i:s');
-				$stmt->bindParam(':created', $created);
-
-
+              // INSERT statement data values
+              $dataArray = array(':fName' => $fName, ':lName' => $lName, ':title' => $title, ':created' => (date('Y-m-d H:i:s')));
 
 				// Execute the query if valid
 				if ( $valid ){
-				  if($stmt->execute()){
+				  if($con->insert($query, $dataArray)){
 					  echo "<div class='alert alert-success'>Record was saved.</div>";
 				  }else{
 					  echo "<div class='alert alert-danger'>Unable to save record.</div>";
 				  }
-				}
-			//Show errors
-			}catch(PDOException $exception){
-				die('ERROR: ' . $exception->getMessage());
 				}
 			}
 		?>
@@ -104,7 +87,7 @@
                     <td></td>
                     <td>
                         <input type='submit' value='Save' class='btn btn-primary' />
-                        <a href='read.php' class='btn btn-danger'>Back to All Employees</a>
+                        <a href=<?php echo READ_EMPLOYEES ?> class='btn btn-danger'>Back to All Employees</a>
                     </td>
                 </tr>
             </table>
@@ -114,10 +97,10 @@
     </div> <!-- end .container -->
 
 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-<script src="libs/jquery-3.1.1.min.js"></script>
+<script src=<?php echo JQUERY_LIB ?>></script>
 
 <!-- Include all compiled plugins (below), or include individual files as needed -->
-<script src="libs/bootstrap-3.3.7/js/bootstrap.min.js"></script>
+<script src=<?php echo JS_BOOTSTRAP_BILL_TURNER ?>></script>
 
 </body>
 </html>

@@ -1,21 +1,14 @@
 <?php
 
-include 'config/database.php';
-
+require_once(DATABASE_CONFIG);
 
 echo "<td><select name='title' class='form-control'>";
 
+$result = $con->select("SELECT * FROM titles");
 
-//query
-$ddQuery = "SELECT * FROM titles";
-$ddStatement = $con->prepare($ddQuery);
-$ddStatement->execute();
-$ddNum = $ddStatement->rowCount();
-
-if($ddNum>0){
-  while($row = $ddStatement->fetch(PDO::FETCH_ASSOC)){
-    extract($row);
-    echo "<option value={$titleId}>{$title}</option>";
+if(count( $result ) > 0){
+  foreach($result as $row) {
+    echo "<option value={$row['titleId']}>{$row['title']}</option>";
   }
 }
 
